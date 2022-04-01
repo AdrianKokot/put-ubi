@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">RpnCalc</string>
+    <string name="numberButton1">1</string>
+    <string name="numberButton2">2</string>
+    <string name="numberButton3">3</string>
+    <string name="numberButton9">9</string>
+    <string name="numberButton8">8</string>
+    <string name="numberButton7">7</string>
+    <string name="numberButton6">6</string>
+    <string name="numberButton5">5</string>
+    <string name="numberButton4">4</string>
+    <string name="actionButtonBack"><![CDATA[<]]></string>
+    <string name="actionButtonDot">.</string>
+    <string name="numberButton0">0</string>
+    <string name="actionButtonEnter">E</string>
+    <string name="actionButtonPlus">+</string>
+    <string name="actionButtonMinus">-</string>
+    <string name="actionButtonMultiply">*</string>
+</resources>
