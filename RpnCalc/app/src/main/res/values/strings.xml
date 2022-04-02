@@ -9,11 +9,18 @@
     <string name="numberButton6">6</string>
     <string name="numberButton5">5</string>
     <string name="numberButton4">4</string>
-    <string name="actionButtonBack"><![CDATA[<]]></string>
+    <string name="actionButtonBack">\u232b</string>
     <string name="actionButtonDot">.</string>
     <string name="numberButton0">0</string>
-    <string name="actionButtonEnter">E</string>
+    <string name="actionButtonEnter">\u23ce</string>
     <string name="actionButtonPlus">+</string>
     <string name="actionButtonMinus">-</string>
-    <string name="actionButtonMultiply">*</string>
+    <string name="actionButtonDivide">\u00f7</string>
+    <string name="actionButtonMultiply">\u00d7</string>
+    <string name="actionButtonSqrt">√</string>
+    <string name="actionButtonPower">^</string>
+    <string name="actionButtonAC">AC</string>
+    <string name="actionButtonChangeSign">±</string>
+    <string name="actionButtonSwap">⇄</string>
+    <string name="actionButtonDrop">⇩</string>
 </resources>

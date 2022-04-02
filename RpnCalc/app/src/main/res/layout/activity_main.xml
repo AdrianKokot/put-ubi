@@ -21,292 +21,327 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/calcFourthRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteY="140dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/calcThirdRow"
-                app:layout_constraintVertical_chainStyle="packed">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/numberButton0"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton0"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/numberButtonDot"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <LinearLayout
+                    android:id="@+id/calcFirstRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/numberButtonMargin"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/numberButtonDot"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:layout_marginStart="@dimen/numberButtonMargin"
-                    android:layout_marginEnd="@dimen/numberButtonMargin"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/actionButtonDot"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/actionButtonBack"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton0"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/actionButtonChangeSign"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onChangeSignButtonClick"
+                        android:text="@string/actionButtonChangeSign"
+                        android:theme="@style/Theme.RpnCalc.NumberButton"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/actionButtonBack"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:layout_marginEnd="@dimen/numberButtonMargin"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/actionButtonBack"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/actionButtonEnter"
-                    app:layout_constraintStart_toEndOf="@+id/numberButtonDot"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/actionButtonDrop"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:width="@dimen/numberButtonSize"
+                        android:background="@drawable/rounded_button"
+                        android:maxWidth="@dimen/numberButtonSize"
+                        android:minWidth="0dp"
+                        android:onClick="onDropButtonClick"
+                        android:text="@string/actionButtonDrop"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-                <Button
-                    android:id="@+id/actionButtonEnter"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/actionButtonEnter"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@id/actionButtonBack"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <Button
+                        android:id="@+id/actionButtonSwap"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:maxWidth="@dimen/numberButtonSize"
+                        android:onClick="onSwapButtonClick"
+                        android:text="@string/actionButtonSwap"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/calcFirstRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/calcSecondRow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed">
+                    <Button
+                        android:id="@+id/actionButtonEnter"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:maxWidth="@dimen/numberButtonSize"
+                        android:onClick="onEnterButtonClick"
+                        android:text="@string/actionButtonEnter"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-                <Button
-                    android:id="@+id/numberButton1"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton1"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/numberButton2"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/actionButtonAC"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onACButtonClick"
+                        android:text="@string/actionButtonAC"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-                <Button
-                    android:id="@+id/numberButton2"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:layout_marginStart="@dimen/numberButtonMargin"
-                    android:layout_marginEnd="@dimen/numberButtonMargin"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton2"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/numberButton3"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton1"
-                    app:layout_constraintTop_toTopOf="parent" />
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/numberButton3"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:layout_marginEnd="@dimen/numberButtonMargin"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton3"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/actionButtonMultiply"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <LinearLayout
+                    android:id="@+id/calcSecondRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/numberButtonMargin"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/actionButtonMultiply"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/actionButtonMultiply"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton3"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/numberButton7"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton7"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <Button
+                        android:id="@+id/numberButton8"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton8"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/calcSecondRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/numberButtonMargin"
-                android:layout_marginBottom="@dimen/numberButtonMargin"
-                app:layout_constraintBottom_toTopOf="@id/calcThirdRow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/calcFirstRow"
-                app:layout_constraintVertical_chainStyle="packed">
+                    <Button
+                        android:id="@+id/numberButton9"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:maxWidth="@dimen/numberButtonSize"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton9"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-                <Button
-                    android:id="@+id/numberButton4"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton4"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/numberButton5"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/actionButtonPower"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onOperatorButtonClick"
+                        android:text="@string/actionButtonPower"
+                        android:theme="@style/Theme.RpnCalc.NumberButton"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/numberButton2"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/numberButton5"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:layout_marginStart="@dimen/numberButtonMargin"
-                    android:layout_marginEnd="@dimen/numberButtonMargin"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton5"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/numberButton6"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton4"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0" />
+                    <Button
+                        android:id="@+id/actionButtonSqrt"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:background="@drawable/rounded_button"
+                        android:maxWidth="@dimen/numberButtonSize"
+                        android:onClick="onOperatorButtonClick"
+                        android:text="@string/actionButtonSqrt"
+                        android:theme="@style/Theme.RpnCalc.NumberButton"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/numberButton2"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/numberButton6"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:layout_marginEnd="@dimen/numberButtonMargin"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton6"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/actionButtonMinus"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton5"
-                    app:layout_constraintTop_toTopOf="parent" />
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/actionButtonMinus"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/actionButtonMinus"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton6"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <LinearLayout
+                    android:id="@+id/calcThirdRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/numberButtonMargin"
+                    android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/calcThirdRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/numberButtonMargin"
-                app:layout_constraintBottom_toTopOf="@+id/calcFourthRow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/calcSecondRow">
+                    <Button
+                        android:id="@+id/numberButton5"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton5"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-                <Button
-                    android:id="@+id/numberButton7"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton7"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/numberButton8"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/numberButton6"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton6"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-                <Button
-                    android:id="@+id/numberButton8"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:layout_marginStart="@dimen/numberButtonMargin"
-                    android:layout_marginEnd="@dimen/numberButtonMargin"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton8"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/numberButton9"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton7"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/numberButton4"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton4"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-                <Button
-                    android:id="@+id/numberButton9"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:layout_marginEnd="@dimen/numberButtonMargin"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/numberButton9"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/actionButtonPlus"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton8"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/actionButtonPlus"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onOperatorButtonClick"
+                        android:text="@string/actionButtonPlus"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
 
-                <Button
-                    android:id="@+id/actionButtonPlus"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/numberButtonSize"
-                    android:layout_height="@dimen/numberButtonSize"
-                    android:background="@drawable/rounded_button"
-                    android:text="@string/actionButtonPlus"
-                    android:theme="@style/Theme.RpnCalc.NumberButton"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/numberButton9"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <Button
+                        android:id="@+id/actionButtonMinus"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onOperatorButtonClick"
+                        android:text="@string/actionButtonMinus"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/calcFourthRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/numberButtonMargin"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/numberButton1"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton1"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                    <Button
+                        android:id="@+id/numberButton2"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton2"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                    <Button
+                        android:id="@+id/numberButton3"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton3"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                    <Button
+                        android:id="@+id/actionButtonMultiply"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onOperatorButtonClick"
+                        android:text="@string/actionButtonMultiply"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                    <Button
+                        android:id="@+id/actionButtonDivide"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onOperatorButtonClick"
+                        android:text="@string/actionButtonDivide"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/calcFifthRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/numberButton0"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberLongButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onNumberButtonClick"
+                        android:text="@string/numberButton0"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                    <Button
+                        android:id="@+id/numberButtonDot"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:layout_marginEnd="@dimen/numberButtonMargin"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onDotButtonClick"
+                        android:text="@string/actionButtonDot"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                    <Button
+                        android:id="@+id/actionButtonBack"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="@dimen/numberButtonSize"
+                        android:layout_height="@dimen/numberButtonSize"
+                        android:background="@drawable/rounded_button"
+                        android:onClick="onBackButtonClick"
+                        android:text="@string/actionButtonBack"
+                        android:theme="@style/Theme.RpnCalc.NumberButton" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

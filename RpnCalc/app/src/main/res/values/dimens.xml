@@ -2,4 +2,6 @@
 <resources>
     <dimen name="numberButtonMargin">6dp</dimen>
     <dimen name="numberButtonSize">64dp</dimen>
+    <dimen name="numberButtonMarginBig">140dp</dimen>
+    <dimen name="numberLongButtonSize">204dp</dimen>
 </resources>
