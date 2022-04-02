@@ -7,16 +7,32 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.children
 import com.kokotadrian.rpncalc.databinding.ActivityMainBinding
-import java.util.ArrayDeque
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.util.*
 import kotlin.math.sqrt
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var stackTexts: Array<TextView>
     private lateinit var binding: ActivityMainBinding
+
+    private val df: DecimalFormat  = DecimalFormat("0")
+
+    private var canAddDot = true
+
+    private var stack = ArrayDeque<Double>()
+
+    private val calcTextFieldValue: Double
+        get() = calcTextField.toDouble()
+
+    private var calcTextField: String
+        get() = binding.calcText.text.toString()
+        set(value) {
+            binding.calcText.text = value
+        }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,19 +46,46 @@ class MainActivity : AppCompatActivity() {
             binding.stackValue4
         )
 
+        df.maximumFractionDigits = 4
+
         setContentView(binding.root)
     }
 
-    private var canAddDot = true
-    private var canAddNumber = true
+    private fun appendToCalcTextField(value: CharSequence) {
+        binding.calcText.append(value);
+    }
 
-    private var stack = ArrayDeque<Double>()
+    private fun resetCalcTextFieldValue() {
+        calcTextField = ""
+        showTopStackValueRow()
+    }
+
+    private fun pushOnStack(value: Double) {
+        stack.push(value)
+        renderStackValues()
+    }
+
+    private fun renderStackValues() {
+        val textViewCount = stackTexts.size
+        val stackSize = if (stack.size >= textViewCount) textViewCount else stack.size
+        val stackValues = stack.take(stackSize).toTypedArray()
+
+        for (v in 0 until textViewCount) {
+            stackTexts[v].text =
+                if (v >= stackSize)
+                    ""
+                else {
+                    if (stackValues[v].equals(0.0)) "0"
+                    else df.format(stackValues[v])
+                }
+        }
+    }
 
     fun onNumberButtonClick(view: View) {
         if (view is Button) {
-            if (canAddNumber) {
-                appendToCalcTextField(view.text);
-            }
+            appendToCalcTextField(view.text);
+
+            hideTopStackValueRow()
         }
     }
 
@@ -50,43 +93,45 @@ class MainActivity : AppCompatActivity() {
         if (canAddDot) {
             binding.calcText.append(".");
             canAddDot = false
+
+            hideTopStackValueRow()
         }
+    }
+
+    private fun hideTopStackValueRow() {
+        binding.stackDisplay4.visibility = View.GONE
+    }
+
+    private fun showTopStackValueRow() {
+        binding.stackDisplay4.visibility = View.VISIBLE
     }
 
     fun onBackButtonClick(view: View) {
         calcTextField = calcTextField.dropLast(1)
         canAddDot = !calcTextField.contains(".")
+
+        if (calcTextField.isEmpty()) {
+            showTopStackValueRow()
+        }
     }
 
     fun onEnterButtonClick(view: View) {
         if (calcTextField.isNotEmpty()) {
             pushOnStack(calcTextFieldValue)
-            resetCalcTextFieldValue()
-            canAddDot = true
-        }
-    }
-
-    private fun appendToCalcTextField(value: CharSequence) {
-        binding.calcText.append(value);
-    }
-
-    private fun appendToCalcTextField(value: String) {
-        binding.calcText.append(value);
-    }
-
-    private val calcTextFieldValue: Double
-        get() = calcTextField.toDouble()
-
-    private fun resetCalcTextFieldValue() {
-        calcTextField = ""
-    }
-
-    private var calcTextField: String
-        get() = binding.calcText.text.toString()
-        set(value) {
-            binding.calcText.text = value
+        } else if (stack.size > 0) {
+            pushOnStack(stack.first())
         }
 
+        resetCalcTextFieldValue()
+        canAddDot = true
+    }
+
+    private fun showToast(text: String) {
+        val toast =
+            Toast.makeText(this, text, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+        toast.show()
+    }
 
     fun onOperatorButtonClick(view: View) {
         if (view is Button) {
@@ -100,7 +145,14 @@ class MainActivity : AppCompatActivity() {
                 val value = if (calcTextField.isEmpty()) stack.pop() else calcTextFieldValue
 
                 result = when (view.id) {
-                    R.id.actionButtonSqrt -> sqrt(value)
+                    R.id.actionButtonSqrt -> {
+                        if(value >= 0) {
+                            sqrt(value)
+                        } else {
+                            showToast("You cannot square negative number")
+                            value
+                        }
+                    }
                     else -> 0.0
                 }
 
@@ -120,11 +172,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.actionButtonMinus -> values[1] - values[0]
                     R.id.actionButtonDivide -> {
                         if (values[0] == 0.0) {
-                            val toast =
-                                Toast.makeText(this, "You cannot divide by 0", Toast.LENGTH_LONG)
-                            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
-                            toast.show()
-
+                            showToast("You cannot divide by 0")
                             values[1]
                         } else {
                             values[1] / values[0]
@@ -142,34 +190,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun onChangeSignButtonClick(view: View) {}
-    fun onDropButtonClick(view: View) {}
-    fun onSwapButtonClick(view: View) {}
+    fun onChangeSignButtonClick(view: View) {
+        if (stack.size > 0) {
+            pushOnStack(stack.pop() * -1)
+        }
+    }
+
+    fun onDropButtonClick(view: View) {
+        if (stack.size > 0) {
+            stack.pop()
+            renderStackValues()
+        }
+    }
+
+    fun onSwapButtonClick(view: View) {
+        if (stack.size >= 2) {
+            val a = stack.removeLast()
+            val b = stack.removeLast()
+            stack.addLast(a)
+            stack.addLast(b)
+
+            renderStackValues()
+        }
+    }
 
     fun onACButtonClick(view: View) {
         stack.clear()
         resetCalcTextFieldValue()
-        renderStackValues()
-    }
-
-    private var precisionDigits = 8
-
-    private fun renderStackValues() {
-
-        val stackTextViewCount = stackTexts.size
-
-        val stackSize = if (stack.size >= stackTextViewCount) stackTextViewCount else stack.size
-
-        val stackValues = stack.take(stackSize).toTypedArray()
-
-        for (v in 0 until stackTextViewCount) {
-            stackTexts[v].text =
-                if (v >= stackSize) "" else "%.${precisionDigits}f".format(stackValues[v]).trimEnd('0', ',', '.')
-        }
-    }
-
-    private fun pushOnStack(value: Double) {
-        stack.push(value)
         renderStackValues()
     }
 }
