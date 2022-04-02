@@ -4,4 +4,7 @@
     <dimen name="numberButtonSize">64dp</dimen>
     <dimen name="numberButtonMarginBig">140dp</dimen>
     <dimen name="numberLongButtonSize">204dp</dimen>
+    <dimen name="numberButtonTextSize">24sp</dimen>
+    <dimen name="stackLabelWidth">24dp</dimen>
+    <dimen name="appElementsMargin">24dp</dimen>
 </resources>

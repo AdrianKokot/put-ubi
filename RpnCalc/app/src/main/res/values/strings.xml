@@ -23,4 +23,8 @@
     <string name="actionButtonChangeSign">±</string>
     <string name="actionButtonSwap">⇄</string>
     <string name="actionButtonDrop">⇩</string>
+    <string name="stackLabel1">1:</string>
+    <string name="stackLabel3">3:</string>
+    <string name="stackLabel4">4:</string>
+    <string name="stackLabel2">2:</string>
 </resources>
