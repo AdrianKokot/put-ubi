@@ -1,16 +1,20 @@
 package com.kokotadrian.rpncalc
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.SettingsSlicesContract
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.kokotadrian.rpncalc.databinding.ActivityMainBinding
-import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.max
 import kotlin.math.sqrt
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +22,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stackTexts: Array<TextView>
     private lateinit var binding: ActivityMainBinding
 
-    private val df: DecimalFormat  = DecimalFormat("0")
+    private val df: DecimalFormat = DecimalFormat("0")
+
+    private val REQUEST_CODE = 2000
 
     private var canAddDot = true
 
@@ -32,7 +38,6 @@ class MainActivity : AppCompatActivity() {
         set(value) {
             binding.calcText.text = value
         }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +55,21 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if(data != null) {
+                if(data.hasExtra("precision")) {
+                    val precision = data.extras?.get("precision").toString().toInt()
+                    df.maximumFractionDigits = precision
+                    renderStackValues()
+                }
+            }
+        }
+    }
+
 
     private fun appendToCalcTextField(value: CharSequence) {
         binding.calcText.append(value);
@@ -146,7 +166,7 @@ class MainActivity : AppCompatActivity() {
 
                 result = when (view.id) {
                     R.id.actionButtonSqrt -> {
-                        if(value >= 0) {
+                        if (value >= 0) {
                             sqrt(value)
                         } else {
                             showToast("You cannot square negative number")
@@ -218,5 +238,11 @@ class MainActivity : AppCompatActivity() {
         stack.clear()
         resetCalcTextFieldValue()
         renderStackValues()
+    }
+
+    fun openSettings(view: View) {
+        val i = Intent(this, SettingsActivity::class.java)
+        i.putExtra("precision", df.maximumFractionDigits)
+        startActivityForResult(i, REQUEST_CODE)
     }
 }

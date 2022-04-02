@@ -6,4 +6,6 @@
     <dimen name="numberButtonTextSize">24sp</dimen>
     <dimen name="stackLabelWidth">24dp</dimen>
     <dimen name="appElementsMargin">24dp</dimen>
+    <dimen name="settingsButtonSize">48dp</dimen>
+    <dimen name="smallTextSize">14sp</dimen>
 </resources>

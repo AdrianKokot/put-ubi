@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_800">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="344dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/closeSettingsButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="@dimen/numberButtonSize"
+                android:layout_height="@dimen/settingsButtonSize"
+                android:layout_marginTop="12dp"
+                android:onClick="closeSettings"
+                android:text="@string/closeSettingsButton"
+                android:textAlignment="center"
+                android:textColor="@color/gray_200"
+                android:textSize="@dimen/numberButtonTextSize"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/settingsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_activity_settings"
+                android:theme="@style/Theme.RpnCalc.TextView"
+                app:layout_constraintBottom_toBottomOf="@+id/closeSettingsButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/closeSettingsButton" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/appElementsMargin"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/settingsTitle">
+
+                <TextView
+                    android:id="@+id/precisionLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_precisionText"
+                    android:textSize="@dimen/smallTextSize"
+                    android:theme="@style/Theme.RpnCalc.TextView" />
+
+                <EditText
+                    android:id="@+id/precisionValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/numberButtonMargin"
+                    android:ems="10"
+                    android:hint="@string/precisionPlaceholder"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:textColor="@color/gray_200"
+                    android:theme="@style/Theme.RpnCalc.EditText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/appElementsMargin"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/accent_700"
+                    android:text="@string/saveButton"
+                    android:onClick="saveSettings"
+                    android:theme="@style/Theme.RpnCalc.TextView" />
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

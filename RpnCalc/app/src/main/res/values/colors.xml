@@ -11,6 +11,7 @@
     <color name="gray_600">#292a2e</color>
     <color name="gray_500">#33383e</color>
     <color name="gray_200">#dddee2</color>
+    <color name="accent_700">#0369a1</color>
     <color name="numberButtonRipple">@color/gray_500</color>
     <color name="numberButtonBackground">@color/gray_600</color>
     <color name="numberButtonTextColor">@color/gray_200</color>

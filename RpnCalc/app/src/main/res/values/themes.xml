@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.RpnCalc" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
-<!--        <item name="android:textColorPrimary">@color/gray_200</item>-->
+        <item name="android:textColorPrimary">@color/gray_200</item>
 <!--        <item name="android:background">@color/gray_800</item>-->
 
         <item name="colorPrimary">@color/purple_500</item>
@@ -33,6 +33,11 @@
     <style name="Theme.RpnCalc.TextView">
         <item name="android:textColor">@color/numberButtonTextColor</item>
         <item name="android:textSize">@dimen/numberButtonTextSize</item>
+    </style>
+
+    <style name="Theme.RpnCalc.EditText" parent="Theme.RpnCalc.TextView">
+        <item name="android:textColorHint">@color/numberButtonTextColor</item>
+        <item name="android:backgroundTint">@color/gray_500</item>
     </style>
 
 </resources>

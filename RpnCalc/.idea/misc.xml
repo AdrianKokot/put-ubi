@@ -5,6 +5,8 @@
       <map>
         <entry key="..\:/git/put-ubi/RpnCalc/app/src/main/res/drawable/rounded_button.xml" value="0.246" />
         <entry key="..\:/git/put-ubi/RpnCalc/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/git/put-ubi/RpnCalc/app/src/main/res/layout/settings_activity.xml" value="0.25" />
+        <entry key="..\:/git/put-ubi/RpnCalc/app/src/main/res/xml/root_preferences.xml" value="0.33" />
       </map>
     </option>
   </component>
