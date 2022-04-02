@@ -33,4 +33,6 @@
     <string name="settings_precisionText">Number of fraction digits</string>
     <string name="precisionPlaceholder">Precision</string>
     <string name="saveButton">Save</string>
+    <string name="colorPlaceholder">Color</string>
+    <string name="settings_colorText">Accent color</string>
 </resources>

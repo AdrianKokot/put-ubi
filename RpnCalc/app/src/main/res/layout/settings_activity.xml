@@ -75,22 +75,43 @@
                     android:textColor="@color/gray_200"
                     android:theme="@style/Theme.RpnCalc.EditText" />
 
+                <TextView
+                    android:id="@+id/colorLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/appElementsMargin"
+                    android:text="@string/settings_colorText"
+                    android:textSize="@dimen/smallTextSize"
+                    android:theme="@style/Theme.RpnCalc.TextView" />
+
+                <EditText
+                    android:id="@+id/colorValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/numberButtonMargin"
+                    android:ems="10"
+                    android:hint="@string/colorPlaceholder"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:textColor="@color/gray_200"
+                    android:theme="@style/Theme.RpnCalc.EditText" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/appElementsMargin"
+                android:layout_marginTop="32dp"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
                 <Button
                     android:id="@+id/saveButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/accent_700"
-                    android:text="@string/saveButton"
                     android:onClick="saveSettings"
+                    android:text="@string/saveButton"
                     android:theme="@style/Theme.RpnCalc.TextView" />
             </LinearLayout>
 

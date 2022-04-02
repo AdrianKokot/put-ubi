@@ -227,6 +227,7 @@
                             android:layout_width="@dimen/numberButtonSize"
                             android:layout_height="@dimen/numberButtonSize"
                             android:background="@drawable/rounded_button"
+                            android:backgroundTint="@color/accent_700"
                             android:onClick="onACButtonClick"
                             android:text="@string/actionButtonAC"
                             android:theme="@style/Theme.RpnCalc.NumberButton" />

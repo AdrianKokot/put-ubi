@@ -2,6 +2,8 @@ package com.kokotadrian.rpncalc
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.SettingsSlicesContract
@@ -12,6 +14,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.kokotadrian.rpncalc.databinding.ActivityMainBinding
+import java.lang.Exception
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.max
@@ -21,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var stackTexts: Array<TextView>
     private lateinit var binding: ActivityMainBinding
+
+    private var currentAccentColor: String = "";
 
     private val df: DecimalFormat = DecimalFormat("0")
 
@@ -52,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         df.maximumFractionDigits = 4
+        currentAccentColor = "#" + Integer.toHexString(resources.getColor(R.color.accent_700))
 
         setContentView(binding.root)
     }
@@ -59,11 +65,19 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            if(data != null) {
-                if(data.hasExtra("precision")) {
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra("precision")) {
                     val precision = data.extras?.get("precision").toString().toInt()
                     df.maximumFractionDigits = precision
+
+                    try {
+                        val color = Color.parseColor(data.extras?.get("color").toString())
+                        binding.actionButtonAC.setBackgroundTintList(ColorStateList.valueOf(color))
+                        currentAccentColor = data.extras?.get("color").toString()
+                    } catch (e: Exception) {
+
+                    }
                     renderStackValues()
                 }
             }
@@ -243,6 +257,8 @@ class MainActivity : AppCompatActivity() {
     fun openSettings(view: View) {
         val i = Intent(this, SettingsActivity::class.java)
         i.putExtra("precision", df.maximumFractionDigits)
+        i.putExtra("color", currentAccentColor)
+
         startActivityForResult(i, REQUEST_CODE)
     }
 }
