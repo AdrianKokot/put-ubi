@@ -101,4 +101,8 @@
     <!-- Strings related to login -->
     <string name="prompt_username">BoardGameGeek username</string>
     <string name="action_sign_in">Start</string>
+    <string name="synchronize">Synchronize</string>
+    <string name="synchronization">Synchronization</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import java.sql.Timestamp
 import java.time.Instant
 
@@ -18,10 +19,9 @@ class AppDBHandler(
     override fun onCreate(db: SQLiteDatabase) {
         val CREATE_GAME_TABLE = """
             CREATE TABLE games (
-                id INTEGER PRIMARY KEY,
+                id NUMERIC PRIMARY KEY,
                 title TEXT, 
                 release_year INTEGER,
-                bgg_id NUMERIC,
                 current_ranking INTEGER,
                 game_thumbnail TEXT
             )
@@ -64,6 +64,33 @@ class AppDBHandler(
         return config;
     }
 
+    fun getGameList(): MutableList<GameInfo> {
+        val db = this.writableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM games", null)
+
+        val list = mutableListOf<GameInfo>()
+
+        with(cursor) {
+            while (moveToNext()) {
+                Log.i("Move", "moveToNext")
+                list.add(
+                    GameInfo(
+                        getLong(getColumnIndexOrThrow("id")),
+                        getString(getColumnIndexOrThrow("title")),
+                        getInt(getColumnIndexOrThrow("release_year")),
+                        getString(getColumnIndexOrThrow("game_thumbnail")),
+                        getInt(getColumnIndexOrThrow("current_ranking"))
+                    )
+                )
+            }
+        }
+
+        db.close()
+
+        return list
+    }
+
     fun assignUsername(username: String) {
         val values = ContentValues()
 
@@ -83,4 +110,55 @@ class AppDBHandler(
         db.update("config", values, null, null)
         db.close()
     }
+
+    private fun deleteGames() {
+        val db = this.writableDatabase
+
+        db.delete("games", "1 = 1", null)
+        db.close()
+    }
+
+    fun syncGameCollection(gameInfoList: MutableList<GameInfo>) {
+//        this.deleteGames()
+
+
+        val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?)"
+        val db = this.writableDatabase
+
+        db.execSQL("DELETE FROM games")
+
+        val statement = db.compileStatement(sql)
+
+        db.beginTransaction()
+        db.compileStatement("DELETE FROM games WHERE 1 = 1").execute()
+        try {
+            for (gameInfo in gameInfoList) {
+                statement.clearBindings()
+                statement.bindLong(1, gameInfo.id)
+                statement.bindString(2, gameInfo.name)
+                statement.bindLong(3, gameInfo.yearPublished.toLong())
+                statement.bindLong(4, gameInfo.boardGameRank.toLong())
+                statement.bindString(5, gameInfo.thumbnail)
+//                val values = ContentValues().apply {
+//                    put("id", gameInfo.id)
+//                    put("title", gameInfo.name)
+//                    put("release_year", gameInfo.yearPublished)
+//                    put("current_ranking", gameInfo.boardGameRank)
+//                    put("game_thumbnail", gameInfo.thumbnail)
+//                }
+
+                statement.execute()
+//                val id =
+//                    db.insertWithOnConflict("games", null, values, SQLiteDatabase.CONFLICT_REPLACE)
+                Log.i("Inserted", "Executed")
+            }
+            db.setTransactionSuccessful()
+        } finally {
+
+            db.endTransaction()
+        }
+//        db.close()
+
+    }
+
 }

@@ -2,6 +2,7 @@ package com.kokotadrian.boardgamegeekviewer
 
 import android.os.AsyncTask
 import android.util.Log
+import android.widget.Toast
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -26,6 +27,10 @@ class ApiQueryBuilder {
     fun userProfile(username: String): String {
         return baseUrl + "user?name=" + username;
     }
+
+    fun userGames(username: String): String {
+        return baseUrl + "collection?username=" + username + "&stats=1&subtype=boardgame"
+    }
 }
 
 
@@ -39,14 +44,74 @@ class UserProfile(val id: Long, val name: String) {
 class UserXmlApiParser : XmlApiParser<UserProfile?> {
     override fun parse(xmlDoc: Document): UserProfile? {
 
-        val element = xmlDoc.getElementsByTagName("user").item(0) as Element
-        val idAttrib = element.getAttribute("id");
-
-        if(idAttrib.isNullOrEmpty()) {
+        if (xmlDoc.getElementsByTagName("errors").length == 0 && xmlDoc.getElementsByTagName("message").length > 0) {
             return null
         }
 
+        val element = xmlDoc.getElementsByTagName("user").item(0) as Element
+        val idAttrib = element.getAttribute("id");
+
+        if (idAttrib.isNullOrEmpty()) {
+            return UserProfile(-1, "missing")
+        }
+
         return UserProfile(idAttrib.toLong(), element.getAttribute("name"))
+    }
+}
+
+class GameInfo(
+    val id: Long,
+    val name: String,
+    val yearPublished: Int,
+    val thumbnail: String,
+    val boardGameRank: Int = 0
+) {
+
+}
+
+class GamesXmlApiParser : XmlApiParser<MutableList<GameInfo>?> {
+    override fun parse(xmlDoc: Document): MutableList<GameInfo>? {
+        val collection = arrayListOf<GameInfo>()
+
+        if (xmlDoc.getElementsByTagName("message").length > 0) {
+            return null
+        }
+
+        val items = xmlDoc.getElementsByTagName("item")
+
+        for (i in 0 until items.length) {
+            if (items.item(i).nodeType == Node.ELEMENT_NODE) {
+                val element = items.item(i) as Element
+
+                if (!element.getAttribute("subtype").equals("boardgame")) {
+                    continue
+                }
+
+                val ranks = element.getElementsByTagName("rank")
+
+                var rank = 0
+
+                for (j in 0 until ranks.length) {
+                    val rankElement = ranks.item(j) as Element
+                    if (rankElement.getAttribute("type").equals("subtype") &&
+                        rankElement.getAttribute("name").equals("boardgame")
+                    ) {
+                        rank = rankElement.getAttribute("value").toIntOrNull() ?: 0
+                    }
+                }
+
+                val gameInfo = GameInfo(
+                    element.getAttribute("objectid").toLong(),
+                    element.getElementsByTagName("name").item(0).textContent.toString(),
+                    element.getElementsByTagName("yearpublished").item(0)?.textContent?.toInt() ?: -1,
+                    element.getElementsByTagName("thumbnail").item(0)?.textContent?.toString() ?: "",
+                    rank
+                )
+
+                collection.add(gameInfo)
+            }
+        }
+        return collection.distinctBy { it.id }.toMutableList()
     }
 }
 
@@ -54,19 +119,20 @@ class UserXmlApiParser : XmlApiParser<UserProfile?> {
 class XmlApiDownloader<T>(
     private val parser: XmlApiParser<T>,
     private val stringUrl: String
-) : AsyncTask<String, Int, T>() {
-    private var listener: (T) -> Unit = {}
+) : AsyncTask<String, Int, String>() {
+    private var listener: (T?) -> Unit = {}
+    private var result: T? = null
 
-    fun addOnFinishListener(callback: (T) -> Unit) {
+    fun addOnFinishListener(callback: (T?) -> Unit) {
         this.listener = callback
     }
 
-    override fun onPostExecute(result: T) {
+    override fun onPostExecute(result: String) {
         super.onPostExecute(result)
-        this.listener(result)
+        this.listener(this.result)
     }
 
-    override fun doInBackground(vararg p0: String?): T? {
+    override fun doInBackground(vararg p0: String?): String {
         try {
             val url = URL(this.stringUrl)
             val inputStream = url.openConnection().getInputStream()
@@ -77,7 +143,7 @@ class XmlApiDownloader<T>(
 
             inputStream.close()
 
-            return this.parser.parse(xmlDoc);
+            this.result = this.parser.parse(xmlDoc)
         } catch (e: MalformedURLException) {
             e.printStackTrace()
         } catch (e: XmlPullParserException) {
@@ -88,6 +154,6 @@ class XmlApiDownloader<T>(
             e.printStackTrace()
         }
 
-        return null;
+        return "";
     }
 }

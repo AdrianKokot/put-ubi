@@ -70,10 +70,16 @@ class SetupAppFragment : Fragment() {
 
             downloader.addOnFinishListener {
                 if (it == null) {
-                    validationMessageText.text = "User with given name doesn't exist"
+                    (activity as MainActivity).showPleaseWaitToast()
+
                 } else {
-                    (activity as MainActivity).db.assignUsername(it.name)
-                    findNavController().navigate(R.id.action_setupAppFragment_to_FirstFragment)
+                    if (it.id == -1L) {
+                        validationMessageText.text = "User with given name doesn't exist"
+                    } else {
+
+                        (activity as MainActivity).db.assignUsername(it.name)
+                        findNavController().navigate(R.id.action_setupAppFragment_to_FirstFragment)
+                    }
                 }
 
                 loadingProgressBar.visibility = View.INVISIBLE
