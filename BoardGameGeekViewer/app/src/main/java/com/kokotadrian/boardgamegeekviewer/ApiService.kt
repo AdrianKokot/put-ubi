@@ -13,6 +13,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
+import java.time.Instant
 import javax.xml.parsers.DocumentBuilderFactory
 
 class ApiQueryBuilder {
@@ -66,6 +67,8 @@ class GameInfo(
 ) {
 }
 
+class GameRank (val date: Instant, val rank: Int = -1) {}
+
 class ExpansionInfo(
     val id: Long,
     val name: String,
@@ -81,9 +84,7 @@ class CollectionItemInfo(
     val thumbnail: String,
     val boardGameRank: Int,
     val type: String
-) {
-
-}
+) {}
 
 class UserCollectionXmlParser : XmlApiParser<MutableList<CollectionItemInfo>?> {
     override fun parse(xmlDoc: Document): MutableList<CollectionItemInfo>? {

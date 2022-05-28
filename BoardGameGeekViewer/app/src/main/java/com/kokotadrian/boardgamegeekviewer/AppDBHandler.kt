@@ -35,13 +35,24 @@ class AppDBHandler(
             )
         """.trimIndent()
 
+        val CREATE_RANK_TABLE = """
+            CREATE TABLE game_ranks ( 
+                id NUMERIC,
+                rank INTEGER,
+                date timestamp default current_date,
+                PRIMARY KEY (id, date)
+            )
+        """.trimIndent()
+
         db.execSQL(CREATE_CONFIG_TABLE);
         db.execSQL(CREATE_GAME_TABLE);
+        db.execSQL(CREATE_RANK_TABLE);
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS games")
         db.execSQL("DROP TABLE IF EXISTS config")
+        db.execSQL("DROP TABLE IF EXISTS game_ranks")
         onCreate(db)
     }
 
@@ -81,6 +92,29 @@ class AppDBHandler(
                         getInt(getColumnIndexOrThrow("release_year")),
                         getString(getColumnIndexOrThrow("game_thumbnail")),
                         getInt(getColumnIndexOrThrow("current_ranking"))
+                    )
+                )
+            }
+        }
+
+        db.close()
+
+        return list
+    }
+
+    fun getGameRankList(id: Long): MutableList<GameRank> {
+        val db = this.writableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM game_ranks WHERE id = " + id, null)
+
+        val list = mutableListOf<GameRank>()
+
+        with(cursor) {
+            while (moveToNext()) {
+                list.add(
+                    GameRank(
+                        Instant.parse(cursor.getString(getColumnIndexOrThrow("date"))),
+                        getInt(getColumnIndexOrThrow("rank"))
                     )
                 )
             }
@@ -136,76 +170,40 @@ class AppDBHandler(
         db.close()
     }
 
-    private fun deleteGames() {
-        val db = this.writableDatabase
-
-        db.delete("games", "1 = 1", null)
-        db.close()
-    }
-
-    fun syncGameCollection(gameInfoList: MutableList<GameInfo>) {
-        val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?, 'game')"
-        val db = this.writableDatabase
-
-        db.execSQL("DELETE FROM games WHERE type = 'game'")
-
-        val statement = db.compileStatement(sql)
-
-        db.beginTransaction()
-
-        try {
-            for (gameInfo in gameInfoList) {
-                statement.clearBindings()
-                statement.bindLong(1, gameInfo.id)
-                statement.bindString(2, gameInfo.name)
-                statement.bindLong(3, gameInfo.yearPublished.toLong())
-                statement.bindLong(4, gameInfo.boardGameRank.toLong())
-                statement.bindString(5, gameInfo.thumbnail)
-                statement.execute()
-            }
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
-            db.close()
-        }
-    }
-
-    fun syncExpansionCollection(gameInfoList: MutableList<ExpansionInfo>) {
-        val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?, 'expansion')"
-        val db = this.writableDatabase
-
-        db.execSQL("DELETE FROM games WHERE type = 'expansion'")
-
-        val statement = db.compileStatement(sql)
-
-        db.beginTransaction()
-
-        try {
-            for (gameInfo in gameInfoList) {
-                statement.clearBindings()
-                statement.bindLong(1, gameInfo.id)
-                statement.bindString(2, gameInfo.name)
-                statement.bindLong(3, gameInfo.yearPublished.toLong())
-                statement.bindLong(4, -1)
-                statement.bindString(5, gameInfo.thumbnail)
-                statement.execute()
-            }
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
-            db.close()
-        }
-    }
-
     fun eraseData() {
         val db = this.writableDatabase
         db.execSQL("DELETE FROM games")
         db.execSQL("DELETE FROM config")
+        db.execSQL("DELETE FROM game_ranks")
         db.close()
     }
 
+    private fun syncRank(list: MutableList<CollectionItemInfo>) {
+        val sql = "INSERT OR REPLACE INTO game_ranks (id, rank) VALUES (?, ?)"
+        val db = this.writableDatabase
+
+        val statement = db.compileStatement(sql)
+
+        db.beginTransaction()
+
+        try {
+            for (info in list) {
+                if (info.type == "game") {
+                    statement.clearBindings()
+                    statement.bindLong(1, info.id)
+                    statement.bindLong(2, info.boardGameRank.toLong())
+                    statement.execute()
+                }
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+            db.close()
+        }
+    }
+
     fun sync(list: MutableList<CollectionItemInfo>) {
-        val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?, ?)"
+        val sql = "INSERT OR REPLACE INTO games VALUES (?, ?, ?, ?, ?, ?)"
         val db = this.writableDatabase
 
         db.execSQL("DELETE FROM games")
@@ -230,6 +228,8 @@ class AppDBHandler(
             db.endTransaction()
             db.close()
         }
+
+        this.syncRank(list)
 
         this.setLastSyncToNow()
     }
