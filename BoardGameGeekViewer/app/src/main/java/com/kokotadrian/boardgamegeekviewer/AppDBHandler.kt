@@ -73,7 +73,6 @@ class AppDBHandler(
 
         with(cursor) {
             while (moveToNext()) {
-                Log.i("Move", "moveToNext")
                 list.add(
                     GameInfo(
                         getLong(getColumnIndexOrThrow("id")),
@@ -119,9 +118,6 @@ class AppDBHandler(
     }
 
     fun syncGameCollection(gameInfoList: MutableList<GameInfo>) {
-//        this.deleteGames()
-
-
         val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?)"
         val db = this.writableDatabase
 
@@ -130,7 +126,7 @@ class AppDBHandler(
         val statement = db.compileStatement(sql)
 
         db.beginTransaction()
-        db.compileStatement("DELETE FROM games WHERE 1 = 1").execute()
+
         try {
             for (gameInfo in gameInfoList) {
                 statement.clearBindings()
@@ -139,26 +135,20 @@ class AppDBHandler(
                 statement.bindLong(3, gameInfo.yearPublished.toLong())
                 statement.bindLong(4, gameInfo.boardGameRank.toLong())
                 statement.bindString(5, gameInfo.thumbnail)
-//                val values = ContentValues().apply {
-//                    put("id", gameInfo.id)
-//                    put("title", gameInfo.name)
-//                    put("release_year", gameInfo.yearPublished)
-//                    put("current_ranking", gameInfo.boardGameRank)
-//                    put("game_thumbnail", gameInfo.thumbnail)
-//                }
-
                 statement.execute()
-//                val id =
-//                    db.insertWithOnConflict("games", null, values, SQLiteDatabase.CONFLICT_REPLACE)
-                Log.i("Inserted", "Executed")
             }
             db.setTransactionSuccessful()
         } finally {
-
             db.endTransaction()
+            db.close()
         }
-//        db.close()
+    }
 
+    fun eraseData() {
+        val db = this.writableDatabase
+        db.execSQL("DELETE FROM games")
+        db.execSQL("DELETE FROM config")
+        db.close()
     }
 
 }

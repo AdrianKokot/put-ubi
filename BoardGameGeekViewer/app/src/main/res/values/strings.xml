@@ -105,4 +105,8 @@
     <string name="synchronization">Synchronization</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
+    <string name="gameList">My games</string>
+    <string name="extensionList">My extensions</string>
+    <string name="eraseData">Wipe data</string>
+    <string name="delete">Delete</string>
 </resources>
