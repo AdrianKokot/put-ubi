@@ -23,7 +23,8 @@ class AppDBHandler(
                 title TEXT, 
                 release_year INTEGER,
                 current_ranking INTEGER,
-                game_thumbnail TEXT
+                game_thumbnail TEXT,
+                type TEXT
             )
         """.trimIndent()
 
@@ -67,7 +68,7 @@ class AppDBHandler(
     fun getGameList(): MutableList<GameInfo> {
         val db = this.writableDatabase
 
-        val cursor = db.rawQuery("SELECT * FROM games", null)
+        val cursor = db.rawQuery("SELECT * FROM games WHERE type = 'game'", null)
 
         val list = mutableListOf<GameInfo>()
 
@@ -90,6 +91,31 @@ class AppDBHandler(
         return list
     }
 
+    fun getExpansionList(): MutableList<ExpansionInfo> {
+        val db = this.writableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM games WHERE type = 'expansion'", null)
+
+        val list = mutableListOf<ExpansionInfo>()
+
+        with(cursor) {
+            while (moveToNext()) {
+                list.add(
+                    ExpansionInfo(
+                        getLong(getColumnIndexOrThrow("id")),
+                        getString(getColumnIndexOrThrow("title")),
+                        getInt(getColumnIndexOrThrow("release_year")),
+                        getString(getColumnIndexOrThrow("game_thumbnail"))
+                    )
+                )
+            }
+        }
+
+        db.close()
+
+        return list
+    }
+
     fun assignUsername(username: String) {
         val values = ContentValues()
 
@@ -100,7 +126,7 @@ class AppDBHandler(
         db.close()
     }
 
-    fun setLastSyncToNow() {
+    private fun setLastSyncToNow() {
         val values = ContentValues()
         values.put("last_sync", Instant.now().toString())
 
@@ -118,10 +144,10 @@ class AppDBHandler(
     }
 
     fun syncGameCollection(gameInfoList: MutableList<GameInfo>) {
-        val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?)"
+        val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?, 'game')"
         val db = this.writableDatabase
 
-        db.execSQL("DELETE FROM games")
+        db.execSQL("DELETE FROM games WHERE type = 'game'")
 
         val statement = db.compileStatement(sql)
 
@@ -144,11 +170,68 @@ class AppDBHandler(
         }
     }
 
+    fun syncExpansionCollection(gameInfoList: MutableList<ExpansionInfo>) {
+        val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?, 'expansion')"
+        val db = this.writableDatabase
+
+        db.execSQL("DELETE FROM games WHERE type = 'expansion'")
+
+        val statement = db.compileStatement(sql)
+
+        db.beginTransaction()
+
+        try {
+            for (gameInfo in gameInfoList) {
+                statement.clearBindings()
+                statement.bindLong(1, gameInfo.id)
+                statement.bindString(2, gameInfo.name)
+                statement.bindLong(3, gameInfo.yearPublished.toLong())
+                statement.bindLong(4, -1)
+                statement.bindString(5, gameInfo.thumbnail)
+                statement.execute()
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+            db.close()
+        }
+    }
+
     fun eraseData() {
         val db = this.writableDatabase
         db.execSQL("DELETE FROM games")
         db.execSQL("DELETE FROM config")
         db.close()
+    }
+
+    fun sync(list: MutableList<CollectionItemInfo>) {
+        val sql = "INSERT INTO games VALUES (?, ?, ?, ?, ?, ?)"
+        val db = this.writableDatabase
+
+        db.execSQL("DELETE FROM games")
+
+        val statement = db.compileStatement(sql)
+
+        db.beginTransaction()
+
+        try {
+            for (info in list) {
+                statement.clearBindings()
+                statement.bindLong(1, info.id)
+                statement.bindString(2, info.name)
+                statement.bindLong(3, info.yearPublished.toLong())
+                statement.bindLong(4, info.boardGameRank.toLong())
+                statement.bindString(5, info.thumbnail)
+                statement.bindString(6, info.type)
+                statement.execute()
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+            db.close()
+        }
+
+        this.setLastSyncToNow()
     }
 
 }

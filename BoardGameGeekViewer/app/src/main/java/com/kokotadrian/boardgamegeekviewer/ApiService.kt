@@ -15,12 +15,6 @@ import java.net.MalformedURLException
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-
-class ApiService {
-
-
-}
-
 class ApiQueryBuilder {
     private val baseUrl = "https://www.boardgamegeek.com/xmlapi2/"
 
@@ -29,13 +23,17 @@ class ApiQueryBuilder {
     }
 
     fun userGames(username: String): String {
-        return baseUrl + "collection?username=" + username + "&stats=1&subtype=boardgame"
+        return baseUrl + "collection?username=" + username + "&stats=1&subtype=boardgame&excludesubtype=boardgameexpansion"
+    }
+
+    fun userExpansions(username: String): String {
+        return baseUrl + "collection?username=" + username + "&stats=1&subtype=boardgameexpansion"
     }
 }
 
 
 interface XmlApiParser<T> {
-    public fun parse(xmlDoc: Document): T;
+    fun parse(xmlDoc: Document): T;
 }
 
 class UserProfile(val id: Long, val name: String) {
@@ -66,12 +64,30 @@ class GameInfo(
     val thumbnail: String,
     val boardGameRank: Int = 0
 ) {
+}
+
+class ExpansionInfo(
+    val id: Long,
+    val name: String,
+    val yearPublished: Int,
+    val thumbnail: String
+) {}
+
+
+class CollectionItemInfo(
+    val id: Long,
+    val name: String,
+    val yearPublished: Int,
+    val thumbnail: String,
+    val boardGameRank: Int,
+    val type: String
+) {
 
 }
 
-class GamesXmlApiParser : XmlApiParser<MutableList<GameInfo>?> {
-    override fun parse(xmlDoc: Document): MutableList<GameInfo>? {
-        val collection = arrayListOf<GameInfo>()
+class UserCollectionXmlParser : XmlApiParser<MutableList<CollectionItemInfo>?> {
+    override fun parse(xmlDoc: Document): MutableList<CollectionItemInfo>? {
+        val collection = mutableListOf<CollectionItemInfo>()
 
         if (xmlDoc.getElementsByTagName("message").length > 0) {
             return null
@@ -83,9 +99,12 @@ class GamesXmlApiParser : XmlApiParser<MutableList<GameInfo>?> {
             if (items.item(i).nodeType == Node.ELEMENT_NODE) {
                 val element = items.item(i) as Element
 
-                if (!element.getAttribute("subtype").equals("boardgame")) {
+                val subtype = element.getAttribute("subtype")
+                if (!(subtype.equals("boardgame") || subtype.equals("boardgameexpansion"))) {
                     continue
                 }
+
+                val type = if (subtype.equals("boardgame")) "game" else "expansion"
 
                 val ranks = element.getElementsByTagName("rank")
 
@@ -100,15 +119,18 @@ class GamesXmlApiParser : XmlApiParser<MutableList<GameInfo>?> {
                     }
                 }
 
-                val gameInfo = GameInfo(
+                val info = CollectionItemInfo(
                     element.getAttribute("objectid").toLong(),
                     element.getElementsByTagName("name").item(0).textContent.toString(),
-                    element.getElementsByTagName("yearpublished").item(0)?.textContent?.toInt() ?: -1,
-                    element.getElementsByTagName("thumbnail").item(0)?.textContent?.toString() ?: "",
-                    rank
+                    element.getElementsByTagName("yearpublished").item(0)?.textContent?.toInt()
+                        ?: -1,
+                    element.getElementsByTagName("thumbnail").item(0)?.textContent?.toString()
+                        ?: "",
+                    rank,
+                    type
                 )
 
-                collection.add(gameInfo)
+                collection.add(info)
             }
         }
         return collection.distinctBy { it.id }.toMutableList()

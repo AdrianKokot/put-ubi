@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kokotadrian.boardgamegeekviewer.databinding.FragmentFirstBinding
@@ -52,7 +51,7 @@ class FirstFragment : Fragment() {
         val config = db.getConfig() ?: return
 
         val games = db.getGameList()
-        val extensions = games
+        val expansions = db.getExpansionList()
 
         val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
             .withLocale(Locale.GERMAN)
@@ -69,7 +68,7 @@ class FirstFragment : Fragment() {
 
         if (config.lastSync != null) {
             statisticTextView.text = Html.fromHtml(
-                "You have <b>" + games.size + "</b> games and <b>" + extensions.size + "</b> extensions.",
+                "You have <b>" + games.size + "</b> games and <b>" + expansions.size + "</b> expansions.",
                 Html.FROM_HTML_MODE_COMPACT
             )
             lastSyncTextView.text = Html.fromHtml(

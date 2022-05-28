@@ -37,10 +37,12 @@ class SynchronizationFragment : Fragment() {
 
     }
 
+    private val db get() = (activity as MainActivity).db
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val config = (activity as MainActivity).db.getConfig() ?: return
+        val config = db.getConfig() ?: return
 
         binding.synchronizeButton.setOnClickListener {
 
@@ -79,33 +81,80 @@ class SynchronizationFragment : Fragment() {
         }
     }
 
-    private fun synchronize(username: String) {
+    private var synchronizedGames = false
+    private var synchronizedExpansions = false
+    private var collectionList = mutableListOf<CollectionItemInfo>()
 
-        binding.synchronizeButton.isEnabled = false
+    private fun synchronize(username: String) {
+        val synchronizeButton = binding.synchronizeButton
+        synchronizeButton.isEnabled = false
         val loadingProgressBar = binding.loading
 
         loadingProgressBar.visibility = View.VISIBLE
 
 
-        val downloader = XmlApiDownloader(
-            GamesXmlApiParser(),
+        val gamesDownloader = XmlApiDownloader(
+            UserCollectionXmlParser(),
             ApiQueryBuilder().userGames(username)
         )
 
-        downloader.addOnFinishListener {
-            if (it == null) {
-                (activity as MainActivity).showPleaseWaitToast()
-            } else {
-                (activity as MainActivity).db.syncGameCollection(it)
-                (activity as MainActivity).db.setLastSyncToNow()
-                findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
-            }
+        val expansionsDownloader = XmlApiDownloader(
+            UserCollectionXmlParser(),
+            ApiQueryBuilder().userExpansions(username)
+        )
 
-            loadingProgressBar.visibility = View.INVISIBLE
-            binding.synchronizeButton.isEnabled = true
+        var showedActivity = false
+
+        gamesDownloader.addOnFinishListener {
+            if (it == null) {
+                if (!showedActivity) {
+                    (activity as MainActivity).showPleaseWaitToast()
+                    showedActivity = true
+                }
+
+                loadingProgressBar.visibility = View.INVISIBLE
+                synchronizeButton.isEnabled = true
+            } else {
+                this.synchronizedGames = true
+                this.collectionList.addAll(0, it)
+
+                if (this.synchronizedExpansions && this.synchronizedGames) {
+                    db.sync(this.collectionList)
+                    loadingProgressBar.visibility = View.INVISIBLE
+                    synchronizeButton.isEnabled = true
+                    findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+                }
+            }
         }
 
-        downloader.execute()
+        expansionsDownloader.addOnFinishListener {
+            if (it == null) {
+                if (!showedActivity) {
+                    (activity as MainActivity).showPleaseWaitToast()
+                    showedActivity = true
+                }
+
+                loadingProgressBar.visibility = View.INVISIBLE
+                synchronizeButton.isEnabled = true
+            } else {
+                this.synchronizedExpansions = true
+                this.collectionList.addAll(0, it)
+
+                if (this.synchronizedExpansions && this.synchronizedGames) {
+                    db.sync(this.collectionList)
+                    loadingProgressBar.visibility = View.INVISIBLE
+                    synchronizeButton.isEnabled = true
+                    findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+                }
+            }
+        }
+
+        if (!this.synchronizedGames) {
+            gamesDownloader.execute()
+        }
+        if (!this.synchronizedExpansions) {
+            expansionsDownloader.execute()
+        }
     }
 
     override fun onDestroyView() {
