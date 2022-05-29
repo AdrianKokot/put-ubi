@@ -109,4 +109,11 @@
     <string name="expansionList">My expansions</string>
     <string name="eraseData">Wipe data</string>
     <string name="delete">Delete</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="orderNumber">No.</string>
+    <string name="thumbnail">Thumb</string>
+    <string name="title">Title</string>
+    <string name="releaseYear">Release</string>
+    <string name="rank">Rank</string>
 </resources>

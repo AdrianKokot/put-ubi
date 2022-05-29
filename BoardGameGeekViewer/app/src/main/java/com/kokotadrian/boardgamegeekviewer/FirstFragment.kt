@@ -25,21 +25,16 @@ import kotlin.system.exitProcess
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         setBarTitle("Board Game Geek Viewer")
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     private val db get() = (activity as MainActivity).db
@@ -57,7 +52,6 @@ class FirstFragment : Fragment() {
             .withLocale(Locale.GERMAN)
             .withZone(ZoneId.systemDefault())
 
-
         val helloTextView: TextView = binding.helloTextView
         val statisticTextView: TextView = binding.statisticTextView
         val lastSyncTextView: TextView = binding.lastSyncTextView
@@ -68,7 +62,7 @@ class FirstFragment : Fragment() {
 
         if (config.lastSync != null) {
             statisticTextView.text = Html.fromHtml(
-                "You have <b>" + games.size + "</b> games and <b>" + expansions.size + "</b> expansions.",
+                "You have <b>" + games.size.toString() + "</b> games and <b>" + expansions.size.toString() + "</b> expansions.",
                 Html.FROM_HTML_MODE_COMPACT
             )
             lastSyncTextView.text = Html.fromHtml(
@@ -77,8 +71,25 @@ class FirstFragment : Fragment() {
             )
         }
 
+        if (config.lastSync == null || games.size == 0) {
+            binding.gameListButton.visibility = View.GONE
+        }
+        if (config.lastSync == null || expansions.size == 0) {
+            binding.expansionListButton.visibility = View.GONE
+        }
+
         binding.synchronizationButton.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }
+
+        binding.gameListButton.setOnClickListener {
+            ListType.setToGameList()
+            findNavController().navigate(R.id.action_FirstFragment_to_gameListFragment)
+        }
+
+        binding.expansionListButton.setOnClickListener {
+            ListType.setToExpansionList()
+            findNavController().navigate(R.id.action_FirstFragment_to_gameListFragment)
         }
 
         binding.eraseDataButton.setOnClickListener {
@@ -90,12 +101,12 @@ class FirstFragment : Fragment() {
 
                     setNegativeButton(
                         R.string.cancel,
-                        DialogInterface.OnClickListener { dialogInterface, i ->
+                        DialogInterface.OnClickListener { _, _ ->
                         })
 
                     setPositiveButton(
                         R.string.delete,
-                        DialogInterface.OnClickListener { dialogInterface, i ->
+                        DialogInterface.OnClickListener { _, _ ->
                             db.eraseData()
                             exitProcess(-1)
                         })

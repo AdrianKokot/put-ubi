@@ -1,29 +1,19 @@
 package com.kokotadrian.boardgamegeekviewer.ui.login
 
-import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kokotadrian.boardgamegeekviewer.*
 import com.kokotadrian.boardgamegeekviewer.databinding.FragmentSetupAppBinding
-import kotlinx.coroutines.withTimeout
-import java.time.Duration
-import java.util.*
-import kotlin.concurrent.schedule
 
 class SetupAppFragment : Fragment() {
-
-
     private var _binding: FragmentSetupAppBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -31,10 +21,8 @@ class SetupAppFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentSetupAppBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onResume() {
@@ -70,18 +58,15 @@ class SetupAppFragment : Fragment() {
 
             downloader.addOnFinishListener {
                 if (it == null) {
-                    (activity as MainActivity).showPleaseWaitToast()
-
+                    showPleaseWaitToast()
                 } else {
                     if (it.id == -1L) {
                         validationMessageText.text = "User with given name doesn't exist"
                     } else {
-
                         (activity as MainActivity).db.assignUsername(it.name)
                         findNavController().navigate(R.id.action_setupAppFragment_to_FirstFragment)
                     }
                 }
-
                 loadingProgressBar.visibility = View.INVISIBLE
             }
 

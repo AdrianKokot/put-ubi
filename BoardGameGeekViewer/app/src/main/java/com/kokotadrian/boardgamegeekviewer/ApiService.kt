@@ -1,20 +1,20 @@
 package com.kokotadrian.boardgamegeekviewer
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.Log
-import android.widget.Toast
+import android.widget.ImageView
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
-import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
-import org.xmlpull.v1.XmlPullParserFactory
 import java.io.IOException
-import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.time.Instant
 import javax.xml.parsers.DocumentBuilderFactory
+
 
 class ApiQueryBuilder {
     private val baseUrl = "https://www.boardgamegeek.com/xmlapi2/"
@@ -58,7 +58,7 @@ class UserXmlApiParser : XmlApiParser<UserProfile?> {
     }
 }
 
-class GameInfo(
+open class GameInfo(
     val id: Long,
     val name: String,
     val yearPublished: Int,
@@ -67,7 +67,7 @@ class GameInfo(
 ) {
 }
 
-class GameRank (val date: Instant, val rank: Int = -1) {}
+class GameRank(val date: Instant, val rank: Int = -1) {}
 
 class ExpansionInfo(
     val id: Long,
@@ -84,7 +84,31 @@ class CollectionItemInfo(
     val thumbnail: String,
     val boardGameRank: Int,
     val type: String
-) {}
+) {
+    companion object {
+        fun from(expansion: ExpansionInfo): CollectionItemInfo {
+            return CollectionItemInfo(
+                expansion.id,
+                expansion.name,
+                expansion.yearPublished,
+                expansion.thumbnail,
+                0,
+                "expansion"
+            )
+        }
+
+        fun from(game: GameInfo): CollectionItemInfo {
+            return CollectionItemInfo(
+                game.id,
+                game.name,
+                game.yearPublished,
+                game.thumbnail,
+                game.boardGameRank,
+                "game"
+            )
+        }
+    }
+}
 
 class UserCollectionXmlParser : XmlApiParser<MutableList<CollectionItemInfo>?> {
     override fun parse(xmlDoc: Document): MutableList<CollectionItemInfo>? {
@@ -178,5 +202,57 @@ class XmlApiDownloader<T>(
         }
 
         return "";
+    }
+}
+
+object ImageCacheSingleton {
+    private var collection = mutableMapOf<String, Bitmap>()
+
+    fun getCachedValue(url: String): Bitmap? {
+        return collection.getOrDefault(url, null)
+    }
+
+    fun setCache(url: String, value: Bitmap) {
+        collection[url] = value
+    }
+}
+
+
+@Suppress("DEPRECATION")
+class DownloadImageTask(var imageView: ImageView) :
+    AsyncTask<String, Void, Bitmap?>() {
+
+    override fun doInBackground(vararg p0: String): Bitmap? {
+        val url = p0[0]
+        var bitmap: Bitmap? = null
+        try {
+            val stream = URL(url).openStream()
+            bitmap = BitmapFactory.decodeStream(stream)
+            ImageCacheSingleton.setCache(url, bitmap)
+        } catch (e: java.lang.Exception) {
+            Log.e("Error", e.message!!)
+            e.printStackTrace()
+        }
+        return bitmap
+    }
+
+    override fun onPostExecute(result: Bitmap?) {
+        imageView.setImageBitmap(result)
+    }
+}
+
+object ListType {
+    private var listType: String = ""
+
+    fun setToGameList() {
+        listType = "game"
+    }
+
+    fun setToExpansionList() {
+        listType = "expansion"
+    }
+
+    fun isGameList(): Boolean {
+        return listType == "game"
     }
 }
