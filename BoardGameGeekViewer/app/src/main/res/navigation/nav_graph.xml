@@ -44,5 +44,14 @@
         android:id="@+id/gameListFragment"
         android:name="com.kokotadrian.boardgamegeekviewer.GameListFragment"
         android:label="fragment_game_list"
-        tools:layout="@layout/fragment_game_list" />
+        tools:layout="@layout/fragment_game_list" >
+        <action
+            android:id="@+id/action_gameListFragment_to_gameHistoryList"
+            app:destination="@id/gameHistoryList" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameHistoryList"
+        android:name="com.kokotadrian.boardgamegeekviewer.GameHistoryListFragment"
+        android:label="fragment_game_history_list"
+        tools:layout="@layout/fragment_game_history_list" />
 </navigation>

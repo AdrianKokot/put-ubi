@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.time.Instant
+import java.time.LocalDate
 
 class AppDBHandler(
     context: Context
@@ -103,7 +104,7 @@ class AppDBHandler(
     fun getGameRankList(id: Long): MutableList<GameRank> {
         val db = this.writableDatabase
 
-        val cursor = db.rawQuery("SELECT * FROM game_ranks WHERE id = " + id, null)
+        val cursor = db.rawQuery("SELECT * FROM game_ranks WHERE id = " + id + " ORDER BY date DESC", null)
 
         val list = mutableListOf<GameRank>()
 
@@ -111,7 +112,7 @@ class AppDBHandler(
             while (moveToNext()) {
                 list.add(
                     GameRank(
-                        Instant.parse(cursor.getString(getColumnIndexOrThrow("date"))),
+                        LocalDate.parse(cursor.getString(getColumnIndexOrThrow("date"))),
                         getInt(getColumnIndexOrThrow("rank"))
                     )
                 )

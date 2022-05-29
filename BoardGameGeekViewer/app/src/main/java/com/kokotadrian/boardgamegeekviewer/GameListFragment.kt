@@ -10,6 +10,7 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.kokotadrian.boardgamegeekviewer.databinding.FragmentGameListBinding
 
 class GameListFragment : Fragment() {
@@ -82,7 +83,8 @@ class GameListFragment : Fragment() {
                 // Row listener
                 row.isClickable = true
                 row.setOnClickListener {
-
+                    HistoryDetailsView.viewedGame = itemList[i]
+                    findNavController().navigate(R.id.action_gameListFragment_to_gameHistoryList)
                 }
             }
 
@@ -138,6 +140,7 @@ class GameListFragment : Fragment() {
             db.getExpansionList().map { CollectionItemInfo.from(it) }.toMutableList()
         }
 
+        currSort = ""
         orderBy("Title")
 
         binding.titleTextView.setOnClickListener {
@@ -163,10 +166,8 @@ class GameListFragment : Fragment() {
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }

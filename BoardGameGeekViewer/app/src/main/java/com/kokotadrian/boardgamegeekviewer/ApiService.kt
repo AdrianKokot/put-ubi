@@ -13,6 +13,9 @@ import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import java.time.Instant
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import javax.xml.parsers.DocumentBuilderFactory
 
 
@@ -67,7 +70,11 @@ open class GameInfo(
 ) {
 }
 
-class GameRank(val date: Instant, val rank: Int = -1) {}
+class GameRank(val date: LocalDate, val rank: Int = -1) {
+    fun getFormattedDate(): String {
+        return DateTimeFormatter.ofPattern("d.MM.uuuu").format(date)
+    }
+}
 
 class ExpansionInfo(
     val id: Long,
@@ -255,4 +262,8 @@ object ListType {
     fun isGameList(): Boolean {
         return listType == "game"
     }
+}
+
+object HistoryDetailsView {
+    var viewedGame: CollectionItemInfo? = null
 }

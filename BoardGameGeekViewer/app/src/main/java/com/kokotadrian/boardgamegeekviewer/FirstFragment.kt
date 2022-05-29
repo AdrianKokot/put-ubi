@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kokotadrian.boardgamegeekviewer.databinding.FragmentFirstBinding
+import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -48,10 +49,6 @@ class FirstFragment : Fragment() {
         val games = db.getGameList()
         val expansions = db.getExpansionList()
 
-        val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-            .withLocale(Locale.GERMAN)
-            .withZone(ZoneId.systemDefault())
-
         val helloTextView: TextView = binding.helloTextView
         val statisticTextView: TextView = binding.statisticTextView
         val lastSyncTextView: TextView = binding.lastSyncTextView
@@ -59,14 +56,14 @@ class FirstFragment : Fragment() {
         helloTextView.text =
             Html.fromHtml("Hello <b>" + config.username + "</b>!", Html.FROM_HTML_MODE_COMPACT)
 
-
         if (config.lastSync != null) {
             statisticTextView.text = Html.fromHtml(
                 "You have <b>" + games.size.toString() + "</b> games and <b>" + expansions.size.toString() + "</b> expansions.",
                 Html.FROM_HTML_MODE_COMPACT
             )
+
             lastSyncTextView.text = Html.fromHtml(
-                "Last sync was <b>" + formatter.format(config.lastSync) + "</b>",
+                "Last sync was <b>" + formatInstant(config.lastSync!!, FormatStyle.MEDIUM) + "</b>",
                 Html.FROM_HTML_MODE_COMPACT
             )
         }
